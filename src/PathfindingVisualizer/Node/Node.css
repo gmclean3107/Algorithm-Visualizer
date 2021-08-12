@@ -17,6 +17,10 @@
   background-color: aqua;
 }
 
+.node-wall {
+  background-color: dimgrey;
+}
+
 .node-shortest-path {
-  background-color: black;
+  background-color: hotpink;
 }

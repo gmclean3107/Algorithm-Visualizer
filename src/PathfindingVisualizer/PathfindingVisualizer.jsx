@@ -14,6 +14,7 @@ export default class PathfindingVisualizer extends Component{
         super(props);
         this.state = {
             grid: [],
+            mousePressed: false,
         };
     }
 
@@ -61,9 +62,24 @@ export default class PathfindingVisualizer extends Component{
         }
     }
 
+    mouseDown(row, col) {
+        const newGrid = getGridWithWalls(this.state.grid, row, col);
+        this.setState({grid: newGrid, mousePressed: true});
+    }
+
+    mouseHeldDown(row, col) {
+        if (!this.state.mousePressed) return;
+        const newGrid = getGridWithWalls(this.state.grid, row, col);
+        this.setState({grid: newGrid});
+    }
+
+    mouseUp() {
+        this.setState({mousePressed: false});
+    }
+
 
     render() {
-        const{grid} = this.state;
+        const{grid, mousePressed} = this.state;
 
         return (
             <>
@@ -75,14 +91,20 @@ export default class PathfindingVisualizer extends Component{
                         return (
                             <div key={rowIdx}>
                                 {row.map((node, nodeIdx) => {
-                                    const {row, col, isFinish, isStart} = node;
+                                    const {row, col, isFinish, isStart, isWall} = node;
                                     return (
                                         <Node
                                             key={nodeIdx}
                                             col={col}
+                                            row={row}
                                             isFinish={isFinish}
                                             isStart={isStart}
-                                            row={row}></Node>
+                                            isWall={isWall}
+                                            mousePressed={mousePressed}
+                                            onMouseDown={(row, col) => this.mouseDown(row, col)}
+                                            onMouseEnter={(row, col) => this.mouseHeldDown(row, col)}
+                                            onMouseUp={() => this.mouseUp()}
+                                            ></Node>
                                     );
                                 })}
                             </div>
@@ -103,6 +125,7 @@ const createNode = (col, row) => {
         isFinish: col === FINISH_NODE_COL && row === FINISH_NODE_ROW,
         distance: Infinity,
         isVisited: false,
+        isWall: false,
         previousNode: null
     };
 };
@@ -118,4 +141,15 @@ const getInitialGrid = () => {
         grid.push(currentRow);
     }
     return grid;
+};
+
+const getGridWithWalls = (grid,row, col) => {
+    const newGrid = grid.slice();
+    const node = newGrid[row][col];
+    const newNode = {
+        ...node,
+        isWall: !node.isWall,
+    };
+    newGrid[row][col] = newNode;
+    return newGrid;
 };
