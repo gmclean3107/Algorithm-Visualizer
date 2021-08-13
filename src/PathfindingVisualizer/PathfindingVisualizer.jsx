@@ -15,7 +15,8 @@ export default class PathfindingVisualizer extends Component{
         this.state = {
             grid: [],
             mousePressed: false,
-            moveNode: false,
+            moveStartNode: false,
+            moveEndNode: false,
         };
     }
 
@@ -25,8 +26,9 @@ export default class PathfindingVisualizer extends Component{
     }
 
     visualizeDijkstra() {
-        this.setState({mousePressed: false, moveNode: false});
+        this.setState({mousePressed: false, moveStartNode: false});
         document.getElementById("start-node-move").disabled = true;
+        document.getElementById("end-node-move").disabled = true;
 
         const {grid} = this.state;
 
@@ -65,29 +67,39 @@ export default class PathfindingVisualizer extends Component{
             }, 50 * i);
         }
         document.getElementById("start-node-move").disabled = false;
+        document.getElementById("end-node-move").disabled = false;
     }
 
     mouseDown(row, col) {
-        if(this.state.moveNode === false) {
+        if(this.state.moveStartNode === false && this.state.moveEndNode == false) {
             const newGrid = getGridWithWalls(this.state.grid, row, col);
             this.setState({grid: newGrid, mousePressed: true});
         }
-        if (this.state.moveNode === true){
+        if (this.state.moveStartNode === true){
             const newGrid = moveStartNode(this.state.grid, row, col);
-            this.setState({grid: newGrid, mousePressed: true, moveNode: false});
+            this.setState({grid: newGrid, mousePressed: true, moveStartNode: false});
+        }
+        if (this.state.moveEndNode === true){
+            const newGrid = moveEndNode(this.state.grid, row, col);
+            this.setState({grid: newGrid, mousePressed: true, moveEndNode: false});
         }
     }
 
     mouseHeldDown(row, col) {
-        if(this.state.moveNode === false) {
+        if(this.state.moveStartNode === false && this.state.moveEndNode == false) {
             if (!this.state.mousePressed) return;
             const newGrid = getGridWithWalls(this.state.grid, row, col);
             this.setState({grid: newGrid});
         }
-        if (this.state.moveNode === true){
+        if (this.state.moveStartNode === true){
             if (!this.state.mousePressed) return;
             const newGrid = moveStartNode(this.state.grid, row, col);
-            this.setState({grid: newGrid, moveNode: false});
+            this.setState({grid: newGrid, moveStartNode: false});
+        }
+        if (this.state.moveEndNode === true){
+            if (!this.state.mousePressed) return;
+            const newGrid = moveEndNode(this.state.grid, row, col);
+            this.setState({grid: newGrid, moveEndNode: false});
         }
     }
 
@@ -95,8 +107,12 @@ export default class PathfindingVisualizer extends Component{
         this.setState({mousePressed: false});
     }
 
-    changeMoveNode(){
-        this.setState({moveNode: !this.state.moveNode});
+    changeMoveStartNode(){
+        this.setState({moveEndNode: false,moveStartNode: !this.state.moveStartNode});
+    }
+
+    changeMoveEndNode(){
+        this.setState({moveStartNode: false, moveEndNode: !this.state.moveEndNode});
     }
 
     render() {
@@ -107,7 +123,8 @@ export default class PathfindingVisualizer extends Component{
                 <button onClick={() => this.visualizeDijkstra()}>
                     Visualize Dijkstra's Algo
                 </button>
-                <button onClick={() => this.changeMoveNode()} id="start-node-move">Move Start Node</button>
+                <button onClick={() => this.changeMoveStartNode()} id="start-node-move">Move Start Node</button>
+                <button onClick={() => this.changeMoveEndNode()} id="end-node-move">Move End Node</button>
                 <div className="grid">
                     {grid.map((row, rowIdx) => {
                         return (
@@ -187,5 +204,19 @@ const moveStartNode = (grid, row, col) => {
         isStart: !node.isStart,
     };
     newGrid[row][col] = newStartNode;
+    return newGrid;
+};
+
+const moveEndNode = (grid, row, col) => {
+    document.getElementById(`node-${FINISH_NODE_ROW}-${FINISH_NODE_COL}`).className="node";
+    FINISH_NODE_ROW = row;
+    FINISH_NODE_COL = col;
+    const newGrid = grid.slice();
+    const node = newGrid[row][col];
+    const newFinishNode = {
+        ...node,
+        isFinish: !node.isFinish,
+    };
+    newGrid[row][col] = newFinishNode;
     return newGrid;
 };
