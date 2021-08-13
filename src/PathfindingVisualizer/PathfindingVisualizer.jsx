@@ -4,10 +4,10 @@ import {dijkstra, shortestPathCalculator} from "../Algorithms/dijkstra";
 
 import './PathfindingVisualizer.css';
 
-const START_NODE_ROW = 3;
-const START_NODE_COL = 8;
-const FINISH_NODE_ROW = 17;
-const FINISH_NODE_COL = 48;
+let START_NODE_ROW = 3;
+let START_NODE_COL = 8;
+let FINISH_NODE_ROW = 17;
+let FINISH_NODE_COL = 48;
 
 export default class PathfindingVisualizer extends Component{
     constructor(props) {
@@ -15,6 +15,7 @@ export default class PathfindingVisualizer extends Component{
         this.state = {
             grid: [],
             mousePressed: false,
+            moveNode: false,
         };
     }
 
@@ -24,6 +25,9 @@ export default class PathfindingVisualizer extends Component{
     }
 
     visualizeDijkstra() {
+        this.setState({mousePressed: false, moveNode: false});
+        document.getElementById("start-node-move").disabled = true;
+
         const {grid} = this.state;
 
         const startNode = grid[START_NODE_ROW][START_NODE_COL];
@@ -60,23 +64,40 @@ export default class PathfindingVisualizer extends Component{
                     'node node-shortest-path';
             }, 50 * i);
         }
+        document.getElementById("start-node-move").disabled = false;
     }
 
     mouseDown(row, col) {
-        const newGrid = getGridWithWalls(this.state.grid, row, col);
-        this.setState({grid: newGrid, mousePressed: true});
+        if(this.state.moveNode === false) {
+            const newGrid = getGridWithWalls(this.state.grid, row, col);
+            this.setState({grid: newGrid, mousePressed: true});
+        }
+        if (this.state.moveNode === true){
+            const newGrid = moveStartNode(this.state.grid, row, col);
+            this.setState({grid: newGrid, mousePressed: true, moveNode: false});
+        }
     }
 
     mouseHeldDown(row, col) {
-        if (!this.state.mousePressed) return;
-        const newGrid = getGridWithWalls(this.state.grid, row, col);
-        this.setState({grid: newGrid});
+        if(this.state.moveNode === false) {
+            if (!this.state.mousePressed) return;
+            const newGrid = getGridWithWalls(this.state.grid, row, col);
+            this.setState({grid: newGrid});
+        }
+        if (this.state.moveNode === true){
+            if (!this.state.mousePressed) return;
+            const newGrid = moveStartNode(this.state.grid, row, col);
+            this.setState({grid: newGrid, moveNode: false});
+        }
     }
 
     mouseUp() {
         this.setState({mousePressed: false});
     }
 
+    changeMoveNode(){
+        this.setState({moveNode: !this.state.moveNode});
+    }
 
     render() {
         const{grid, mousePressed} = this.state;
@@ -86,6 +107,7 @@ export default class PathfindingVisualizer extends Component{
                 <button onClick={() => this.visualizeDijkstra()}>
                     Visualize Dijkstra's Algo
                 </button>
+                <button onClick={() => this.changeMoveNode()} id="start-node-move">Move Start Node</button>
                 <div className="grid">
                     {grid.map((row, rowIdx) => {
                         return (
@@ -142,7 +164,7 @@ const getInitialGrid = () => {
     }
     return grid;
 };
-
+//Adds walls
 const getGridWithWalls = (grid,row, col) => {
     const newGrid = grid.slice();
     const node = newGrid[row][col];
@@ -151,5 +173,19 @@ const getGridWithWalls = (grid,row, col) => {
         isWall: !node.isWall,
     };
     newGrid[row][col] = newNode;
+    return newGrid;
+};
+
+const moveStartNode = (grid, row, col) => {
+    document.getElementById(`node-${START_NODE_ROW}-${START_NODE_COL}`).className="node";
+    START_NODE_ROW = row;
+    START_NODE_COL = col;
+    const newGrid = grid.slice();
+    const node = newGrid[row][col];
+    const newStartNode = {
+        ...node,
+        isStart: !node.isStart,
+    };
+    newGrid[row][col] = newStartNode;
     return newGrid;
 };
