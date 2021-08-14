@@ -9,6 +9,11 @@ let START_NODE_COL = 8;
 let FINISH_NODE_ROW = 17;
 let FINISH_NODE_COL = 48;
 
+const DEFAULT_START_NODE_ROW = 3;
+const DEFAULT_START_NODE_COL = 8;
+const DEFAULT_FINISH_NODE_ROW = 17;
+const DEFAULT_FINISH_NODE_COL = 48;
+
 export default class PathfindingVisualizer extends Component{
     constructor(props) {
         super(props);
@@ -71,7 +76,7 @@ export default class PathfindingVisualizer extends Component{
     }
 
     mouseDown(row, col) {
-        if(this.state.moveStartNode === false && this.state.moveEndNode == false) {
+        if(this.state.moveStartNode === false && this.state.moveEndNode === false) {
             const newGrid = getGridWithWalls(this.state.grid, row, col);
             this.setState({grid: newGrid, mousePressed: true});
         }
@@ -86,7 +91,7 @@ export default class PathfindingVisualizer extends Component{
     }
 
     mouseHeldDown(row, col) {
-        if(this.state.moveStartNode === false && this.state.moveEndNode == false) {
+        if(this.state.moveStartNode === false && this.state.moveEndNode === false) {
             if (!this.state.mousePressed) return;
             const newGrid = getGridWithWalls(this.state.grid, row, col);
             this.setState({grid: newGrid});
@@ -115,6 +120,82 @@ export default class PathfindingVisualizer extends Component{
         this.setState({moveStartNode: false, moveEndNode: !this.state.moveEndNode});
     }
 
+    resetGrid() {
+
+        const visitedNodes = document.getElementsByClassName("node-visited");
+        const shortestNodes = document.getElementsByClassName("node-shortest-path");
+        const visitedNodesLength = visitedNodes.length;
+        const shortestNodesLength = shortestNodes.length;
+        let shortestNodesLengthInt = parseInt(shortestNodesLength.toString());
+        let visitedNodesLengthInt = parseInt(visitedNodesLength.toString());
+        let count = 0;
+
+
+        while(parseInt(visitedNodes.length.toString()) <= visitedNodesLengthInt) {
+            console.log(count);
+            if (parseInt(visitedNodes.length.toString())===0){
+                count=0;
+                break;
+            }
+            if ((visitedNodesLengthInt+=1) >=parseInt(visitedNodes.length.toString())){
+                count = 0;
+            }
+            visitedNodes[count].className = "node";
+            count++;
+        }
+
+
+        while(parseInt(shortestNodes.length.toString()) <= shortestNodesLengthInt) {
+            console.log(count);
+            if (parseInt(shortestNodes.length.toString())===0){
+                count=0;
+                break;
+            }
+            if ((shortestNodesLengthInt+=1) >=parseInt(shortestNodes.length.toString())){
+                count = 0;
+            }
+            shortestNodes[count].className = "node";
+            count++;
+        }
+
+
+        let ranStartRow = Math.floor(Math.random()*15);
+        while(ranStartRow===START_NODE_ROW || ranStartRow === FINISH_NODE_ROW){
+            ranStartRow = Math.floor(Math.random()*15);
+        }
+        START_NODE_ROW = ranStartRow;
+
+        let ranStartCol = Math.floor(Math.random()*50);
+        while(ranStartCol===START_NODE_COL || ranStartCol === FINISH_NODE_COL){
+            ranStartCol = Math.floor(Math.random()*50);
+        }
+        START_NODE_COL = ranStartCol;
+
+        let ranFinishRow = Math.floor(Math.random()*15);
+        while(ranFinishRow===START_NODE_ROW || ranFinishRow === FINISH_NODE_ROW){
+            ranFinishRow = Math.floor(Math.random()*15);
+        }
+        FINISH_NODE_ROW = ranFinishRow;
+
+        let ranFinishCol = Math.floor(Math.random()*50);
+        while(ranFinishCol===START_NODE_COL || ranFinishCol === FINISH_NODE_COL){
+            ranFinishCol = Math.floor(Math.random()*50);
+        }
+        FINISH_NODE_COL = ranFinishCol;
+
+        this.setState({grid: getInitialGrid()});
+        const newGrid = this.state.grid;
+
+        this.setState({grid: moveStartNode(newGrid, START_NODE_ROW, START_NODE_COL)});
+        this.setState({grid: moveEndNode(newGrid, FINISH_NODE_ROW, FINISH_NODE_COL)});
+        this.setState({grid: getInitialGrid()});
+
+    }
+
+    resetWalls() {
+        this.setState({grid: getInitialGrid()});
+    }
+
     render() {
         const{grid, mousePressed} = this.state;
 
@@ -125,6 +206,8 @@ export default class PathfindingVisualizer extends Component{
                 </button>
                 <button onClick={() => this.changeMoveStartNode()} id="start-node-move">Move Start Node</button>
                 <button onClick={() => this.changeMoveEndNode()} id="end-node-move">Move End Node</button>
+                <button onClick={() => this.resetGrid()} id="clear-grid">Clear Grid</button>
+                <button onClick={() => this.resetWalls()} id="clear-walls">Clear Walls</button>
                 <div className="grid">
                     {grid.map((row, rowIdx) => {
                         return (
@@ -192,31 +275,41 @@ const getGridWithWalls = (grid,row, col) => {
     newGrid[row][col] = newNode;
     return newGrid;
 };
-
+//Moves Start Node
 const moveStartNode = (grid, row, col) => {
-    document.getElementById(`node-${START_NODE_ROW}-${START_NODE_COL}`).className="node";
-    START_NODE_ROW = row;
-    START_NODE_COL = col;
-    const newGrid = grid.slice();
-    const node = newGrid[row][col];
-    const newStartNode = {
-        ...node,
-        isStart: !node.isStart,
-    };
-    newGrid[row][col] = newStartNode;
-    return newGrid;
+    if (row !== START_NODE_ROW || col !== START_NODE_COL) {
+        document.getElementById(`node-${START_NODE_ROW}-${START_NODE_COL}`).className = "node";
+        document.getElementById(`node-${DEFAULT_START_NODE_ROW}-${DEFAULT_START_NODE_COL}`).className = "node";
+        START_NODE_ROW = row;
+        START_NODE_COL = col;
+        const newGrid = grid.slice();
+        const node = newGrid[row][col];
+        const newStartNode = {
+            ...node,
+            isStart: !node.isStart,
+        };
+        newGrid[row][col] = newStartNode;
+        return newGrid;
+    }else{
+        return grid;
+    }
 };
-
+//Moves End Node
 const moveEndNode = (grid, row, col) => {
-    document.getElementById(`node-${FINISH_NODE_ROW}-${FINISH_NODE_COL}`).className="node";
-    FINISH_NODE_ROW = row;
-    FINISH_NODE_COL = col;
-    const newGrid = grid.slice();
-    const node = newGrid[row][col];
-    const newFinishNode = {
-        ...node,
-        isFinish: !node.isFinish,
-    };
-    newGrid[row][col] = newFinishNode;
-    return newGrid;
+    if (row !== FINISH_NODE_ROW || col !== FINISH_NODE_COL) {
+        document.getElementById(`node-${FINISH_NODE_ROW}-${FINISH_NODE_COL}`).className = "node";
+        document.getElementById(`node-${DEFAULT_FINISH_NODE_ROW}-${DEFAULT_FINISH_NODE_COL}`).className = "node";
+        FINISH_NODE_ROW = row;
+        FINISH_NODE_COL = col;
+        const newGrid = grid.slice();
+        const node = newGrid[row][col];
+        const newFinishNode = {
+            ...node,
+            isFinish: !node.isFinish,
+        };
+        newGrid[row][col] = newFinishNode;
+        return newGrid;
+    }else{
+        return grid;
+    }
 };
