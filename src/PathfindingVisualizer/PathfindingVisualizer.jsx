@@ -34,6 +34,8 @@ export default class PathfindingVisualizer extends Component{
         this.setState({mousePressed: false, moveStartNode: false});
         document.getElementById("start-node-move").disabled = true;
         document.getElementById("end-node-move").disabled = true;
+        document.getElementById("clear-grid").disabled = true;
+        document.getElementById("clear-walls").disabled = true;
 
         const {grid} = this.state;
 
@@ -73,6 +75,8 @@ export default class PathfindingVisualizer extends Component{
         }
         document.getElementById("start-node-move").disabled = false;
         document.getElementById("end-node-move").disabled = false;
+        document.getElementById("clear-grid").disabled = false;
+        document.getElementById("clear-walls").disabled = false;
     }
 
     mouseDown(row, col) {
