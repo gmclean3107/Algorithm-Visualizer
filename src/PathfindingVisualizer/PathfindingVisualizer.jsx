@@ -201,13 +201,15 @@ export default class PathfindingVisualizer extends Component{
 
         return (
             <>
-                <button onClick={() => this.visualizeDijkstra()}>
-                    Visualize Dijkstra's Algo
+                <div className="header">
+                <button onClick={() => this.visualizeDijkstra()} className={"run-dijkstra"}>
+                    Visualize Dijkstra
                 </button>
                 <button onClick={() => this.changeMoveStartNode()} id="start-node-move">Move Start Node</button>
                 <button onClick={() => this.changeMoveEndNode()} id="end-node-move">Move End Node</button>
                 <button onClick={() => this.resetGrid()} id="clear-grid">Clear Grid</button>
                 <button onClick={() => this.resetWalls()} id="clear-walls">Clear Walls</button>
+                </div>
                 <div className="grid">
                     {grid.map((row, rowIdx) => {
                         return (

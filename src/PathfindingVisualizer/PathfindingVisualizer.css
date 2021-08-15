@@ -2,3 +2,97 @@
     /*Padding done through trial and error in order to get the table centered */
     padding: 150px 325px;
 }
+
+.header{
+    overflow: hidden;
+    background-color: #f1f1f1;
+    padding: 60px;
+}
+
+@font-face {
+    font-family: HelveticaNow;
+    src: url("Fonts/HelveticaNowText-Regular.woff");
+}
+
+.run-dijkstra{
+    border: hidden;
+    font-family: HelveticaNow;
+    font-size: xx-large;
+    position: relative;
+    bottom: 45px;
+}
+
+.run-dijkstra:hover{
+    background-color: #ddd;
+}
+
+.run-dijkstra:active{
+    color: aqua;
+}
+
+#start-node-move{
+    border: hidden;
+    font-family: HelveticaNow;
+    font-size: large;
+    position: relative;
+    right: 300px;
+}
+
+#start-node-move:hover{
+    background-color: #ddd;
+}
+
+#start-node-move:active{
+    color: green;
+}
+
+#end-node-move{
+    border: hidden;
+    font-family: HelveticaNow;
+    font-size: large;
+    position: relative;
+    right: 250px;
+}
+
+#end-node-move:hover{
+    background-color: #ddd;
+}
+
+#end-node-move:active{
+    color: red;
+}
+
+
+#clear-grid{
+    border: hidden;
+    font-family: HelveticaNow;
+    font-size: medium;
+    position: relative;
+    right: 465px;
+    top: 30px
+}
+
+#clear-grid:hover{
+    background-color: #ddd;
+}
+
+#clear-grid:active{
+    color: lightslategray;
+}
+
+#clear-walls{
+    border: hidden;
+    font-family: HelveticaNow;
+    font-size: medium;
+    position: relative;
+    right: 557px;
+    top: 55px
+}
+
+#clear-walls:hover{
+    background-color: #ddd;
+}
+
+#clear-walls:active{
+    color: lightslategray;
+}
