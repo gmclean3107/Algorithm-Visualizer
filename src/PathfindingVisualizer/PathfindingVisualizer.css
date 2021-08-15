@@ -16,7 +16,7 @@
 
 .run-dijkstra{
     border: hidden;
-    font-family: HelveticaNow;
+    font-family: HelveticaNow, serif;
     font-size: xx-large;
     position: relative;
     bottom: 45px;
@@ -32,7 +32,7 @@
 
 #start-node-move{
     border: hidden;
-    font-family: HelveticaNow;
+    font-family: HelveticaNow, serif;
     font-size: large;
     position: relative;
     right: 300px;
@@ -48,7 +48,7 @@
 
 #end-node-move{
     border: hidden;
-    font-family: HelveticaNow;
+    font-family: HelveticaNow, serif;
     font-size: large;
     position: relative;
     right: 250px;
@@ -65,7 +65,7 @@
 
 #clear-grid{
     border: hidden;
-    font-family: HelveticaNow;
+    font-family: HelveticaNow, serif;
     font-size: medium;
     position: relative;
     right: 465px;
@@ -82,7 +82,7 @@
 
 #clear-walls{
     border: hidden;
-    font-family: HelveticaNow;
+    font-family: HelveticaNow, serif;
     font-size: medium;
     position: relative;
     right: 557px;
