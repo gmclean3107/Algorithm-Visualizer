@@ -268,14 +268,19 @@ const getInitialGrid = () => {
 };
 //Adds walls
 const getGridWithWalls = (grid,row, col) => {
-    const newGrid = grid.slice();
-    const node = newGrid[row][col];
-    const newNode = {
-        ...node,
-        isWall: !node.isWall,
-    };
-    newGrid[row][col] = newNode;
-    return newGrid;
+    if((row !== START_NODE_ROW || col !== START_NODE_COL) && (row !== FINISH_NODE_ROW || col !== FINISH_NODE_COL)) {
+        const newGrid = grid.slice();
+        const node = newGrid[row][col];
+        const newNode = {
+            ...node,
+            isWall: !node.isWall,
+        };
+        newGrid[row][col] = newNode;
+        return newGrid;
+    }
+    else{
+        return grid;
+    }
 };
 //Moves Start Node
 const moveStartNode = (grid, row, col) => {
