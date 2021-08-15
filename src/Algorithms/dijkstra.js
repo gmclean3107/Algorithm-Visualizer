@@ -13,7 +13,7 @@ export function dijkstra(grid, startNode, finishNode){
         const closestNode = unvisitedNodes.shift();
         //If the node has a distance of Infinity then we are trapped and must stop.
         if (closestNode.distance === Infinity) return visitedNodesOrdered;
-
+        //Restarts the loop when a wall is encountered as they cannot be scanned and therefore cannot be visited.
         if (closestNode.isWall) continue;
         //The current node will always be visited as we are on it.
         closestNode.isVisited = true;
